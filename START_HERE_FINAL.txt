@@ -1,0 +1,12 @@
+APEXML FINAL — SIMPLE PRO
+==========================
+
+1. Extract the ZIP.
+2. Open PowerShell in this exact folder.
+3. Install:
+   python -m pip install -r requirements.txt
+4. Start:
+   python launch.py
+
+Recommended final-project workflow:
+Dataset Overview -> Smart Preprocessing (Model Pipeline) -> Feature Engineering & EDA -> ML Studio -> Competition Boost -> Evaluation -> Inference / Prediction -> Doctor's 10 Cases
