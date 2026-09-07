@@ -42,7 +42,7 @@ WORKFLOW REFERENCE DOCUMENTS:
 
 
 def get_all_api_keys():
-    """Retrieve all available API keys from environment variables."""
+    """Retrieve all available API keys from environment variables or Streamlit secrets."""
     from dotenv import load_dotenv
     load_dotenv()
     
@@ -61,6 +61,24 @@ def get_all_api_keys():
         k = os.environ.get(f"GEMINI_API_KEY_{i}", "").strip()
         if k and k != "your_gemini_api_key_here" and k not in keys:
             keys.append(k)
+
+    # Check Streamlit Cloud secrets (st.secrets)
+    try:
+        if "GEMINI_API_KEY" in st.secrets:
+            val = str(st.secrets["GEMINI_API_KEY"]).strip()
+            if val and val != "your_gemini_api_key_here":
+                for k in val.split(","):
+                    k = k.strip()
+                    if k and k not in keys:
+                        keys.append(k)
+        for i in range(1, 11):
+            key_name = f"GEMINI_API_KEY_{i}"
+            if key_name in st.secrets:
+                k = str(st.secrets[key_name]).strip()
+                if k and k != "your_gemini_api_key_here" and k not in keys:
+                    keys.append(k)
+    except Exception:
+        pass
             
     return keys
 
@@ -103,8 +121,16 @@ def get_ai_suggestion(user_context: str) -> str:
         
         if client:
             try:
+                gemini_model = "gemini-2.5-flash"
+                try:
+                    if "GEMINI_MODEL" in st.secrets:
+                        gemini_model = str(st.secrets["GEMINI_MODEL"]).strip()
+                except Exception:
+                    pass
+                gemini_model = os.environ.get("GEMINI_MODEL", gemini_model)
+
                 response = client.models.generate_content(
-                    model=os.environ.get("GEMINI_MODEL", "gemini-2.5-flash"),
+                    model=gemini_model,
                     contents=user_context,
                     config=types.GenerateContentConfig(
                         system_instruction=_SYSTEM_PROMPT,
