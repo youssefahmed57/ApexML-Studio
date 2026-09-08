@@ -30,13 +30,13 @@ warnings.filterwarnings("ignore")
 try:
     from xgboost import XGBClassifier, XGBRegressor
     HAS_XGB = True
-except ImportError:
+except Exception:
     HAS_XGB = False
 
 try:
     from lightgbm import LGBMClassifier, LGBMRegressor
     HAS_LGB = True
-except ImportError:
+except Exception:
     HAS_LGB = False
 
 
